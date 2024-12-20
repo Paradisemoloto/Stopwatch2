@@ -1,0 +1,113 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Stopwatch</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="stopwatch">
+    <div class="display">00:00:00</div>
+    <div class="controls">
+      <button id="start">Start</button>
+      <button id="pause">Pause</button>
+      <button id="reset">Reset</button>
+      <button id="lap">Lap</button>
+    </div>
+    <ul id="lap-times"></ul>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>
+<ALOASK-SEPARATE-EDITORS>
+.stopwatch {
+
+  text-align: center;
+  margin: 20px auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: blue;
+}
+
+.display {
+  font-size: 36px;
+  font-weight: bold;
+}
+
+.controls button {
+  padding: 10px 20px;
+  margin: 5px;
+  background-color: red;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+#lap-times {
+  list-style-type: none;
+  padding: 0;
+}
+
+#lap-times li {
+  margin: 5px 0;
+}
+<ALOASK-SEPARATE-EDITORS>
+const display = document.querySelector('.display');
+const startBtn = document.getElementById('start');
+const pauseBtn = document.getElementById('pause');
+const resetBtn = document.getElementById('reset');
+const lapBtn = document.getElementById('lap');
+const lapTimesList = document.getElementById('lap-times');
+
+let intervalId;
+let milliseconds = 0;
+let seconds = 0;
+let minutes = 0;
+
+function formatTime() {
+  const formattedMilliseconds = milliseconds.toString().padStart(2, '0');
+  const formattedSeconds = seconds.toString().padStart(2, '0');
+  const formattedMinutes = minutes.toString().padStart(2, '0');
+  return `${formattedMinutes}:${formattedSeconds}:${formattedMilliseconds}`;
+}
+
+function startTimer() {
+  intervalId = setInterval(() => {
+    milliseconds++;
+    if (milliseconds === 100) {
+      milliseconds = 0;
+      seconds++;
+    }
+    if (seconds === 60) {
+      seconds = 0;
+      minutes++;
+    }
+    display.textContent = formatTime();
+  }, 10);
+}
+
+function pauseTimer() {
+  clearInterval(intervalId);
+}
+
+function resetTimer() {
+  clearInterval(intervalId);
+  milliseconds = 0;
+  seconds = 0;
+  minutes = 0;
+  display.textContent = '00:00:00';
+  lapTimesList.innerHTML = '';
+}
+
+function lapTime() {
+  const lapTimeItem = document.createElement('li');
+  lapTimeItem.textContent = `Lap ${lapTimesList.childElementCount + 1}: ${formatTime()}`;
+  lapTimesList.appendChild(lapTimeItem);
+}
+
+startBtn.addEventListener('click', startTimer);
+pauseBtn.addEventListener('click', pauseTimer);
+resetBtn.addEventListener('click', resetTimer);
+lapBtn.addEventListener('click', lapTime);
